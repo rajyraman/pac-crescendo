@@ -18,7 +18,7 @@ ModuleVersion = '0.0.1'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = 'ed5ab691-d0d2-4268-8670-ff95a5dc0bf7'
+GUID = 'caeb3e7e-cdea-4730-b7d6-1c0b94d1be6f'
 
 # Author of this module
 Author = 'Natraj'
@@ -69,8 +69,8 @@ PowerShellVersion = '5.1.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-UnmanagedSolutions', 'Get-ManagedSolutions', 'Export-Solution', 
-               'Select-AuthProfile', 'Add-AuthProfiles'
+FunctionsToExport = 'Get-UnmanagedSolutions', 'Get-ManagedSolutions', 'Export-Solutions', 
+               'Expand-Solutions', 'Select-AuthProfile', 'Add-AuthProfiles'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -79,8 +79,8 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'pac-sol-un', 'pac-sol-man', 'pac-exp-sol', 'pac-sel-auth', 
-               'pac-add-auth'
+AliasesToExport = 'pac-sol-unm', 'pac-sol-man', 'pac-sol-exp', 'pac-sol-unp', 
+               'pac-auth-sel', 'pac-auth-add'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -124,7 +124,7 @@ PrivateData = @{
 
 
     # CrescendoGenerated
-    CrescendoGenerated = '07/24/2023 16:32:26'
+    CrescendoGenerated = '07/24/2023 17:37:47'
 
     # CrescendoVersion
     CrescendoVersion = '1.0.0'

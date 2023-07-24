@@ -16,7 +16,7 @@
       ],
       "Description": "Gets list of unmanaged solutions",
       "Aliases": [
-        "pac-sol-un"
+        "pac-sol-unm"
       ],
       "OutputHandlers": [
         {
@@ -64,7 +64,7 @@
     },
     {
       "Verb": "Export",
-      "Noun": "Solution",
+      "Noun": "Solutions",
       "OriginalName": "pac",
       "OriginalCommandElements": [
         "solution",
@@ -77,14 +77,45 @@
       ],
       "Description": "Exports Unmanaged solution to disk",
       "Aliases": [
-        "pac-exp-sol"
+        "pac-sol-exp"
       ],
       "OutputHandlers": [
         {
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host \"Exporting solution $($selected.SolutionUniqueName)..\"; pac solution export -p . -n $selected.SolutionUniqueName -ow }"
+          "Handler": "$selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView; $selected | ForEach-Object { Write-Host \"Exporting solution $($_.SolutionUniqueName)..\"; pac solution export -p . -n $_.SolutionUniqueName -ow }"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
+      "Verb": "Expand",
+      "Noun": "Solutions",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "list",
+        "--json"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Exports Unmanaged solution to disk and unpacks it",
+      "Aliases": [
+        "pac-sol-unp"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView; $selected | ForEach-Object { Write-Host \"Cloning solution $($_.SolutionUniqueName)..\"; pac solution clone -p Both -o . -n $_.SolutionUniqueName -a -pca }"
         }
       ],
       "SupportsShouldProcess": false,
@@ -107,7 +138,7 @@
       ],
       "Description": "Selects a profile for authentication",
       "Aliases": [
-        "pac-sel-auth"
+        "pac-auth-sel"
       ],
       "OutputHandlers": [
         {
@@ -137,7 +168,7 @@
       ],
       "Description": "Creates auth profiles for all environments user has access to",
       "Aliases": [
-        "pac-add-auth"
+        "pac-auth-add"
       ],
       "OutputHandlers": [
         {

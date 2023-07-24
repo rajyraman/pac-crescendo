@@ -181,7 +181,7 @@ Gets list of managed solutions
 
 
 
-function Export-Solution
+function Export-Solutions
 {
 [PowerShellCustomFunctionAttribute(RequiresElevation=$False)]
 [CmdletBinding()]
@@ -191,7 +191,7 @@ param(    )
 BEGIN {
     $__PARAMETERMAP = @{}
     $__outputHandlers = @{
-        Default = @{ StreamOutput = $True; Handler = { $selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host "Exporting solution $($selected.SolutionUniqueName).."; pac solution export -p . -n $selected.SolutionUniqueName -ow } } }
+        Default = @{ StreamOutput = $True; Handler = { $selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView; $selected | ForEach-Object { Write-Host "Exporting solution $($_.SolutionUniqueName).."; pac solution export -p . -n $_.SolutionUniqueName -ow } } }
     }
 }
 
@@ -259,6 +259,91 @@ PROCESS {
 
 .DESCRIPTION
 Exports Unmanaged solution to disk
+
+#>
+}
+
+
+
+
+function Expand-Solutions
+{
+[PowerShellCustomFunctionAttribute(RequiresElevation=$False)]
+[CmdletBinding()]
+
+param(    )
+
+BEGIN {
+    $__PARAMETERMAP = @{}
+    $__outputHandlers = @{
+        Default = @{ StreamOutput = $True; Handler = { $selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView; $selected | ForEach-Object { Write-Host "Cloning solution $($_.SolutionUniqueName).."; pac solution clone -p Both -o . -n $_.SolutionUniqueName -a -pca } } }
+    }
+}
+
+PROCESS {
+    $__boundParameters = $PSBoundParameters
+    $__defaultValueParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Values.Where({$_.Attributes.Where({$_.TypeId.Name -eq "PSDefaultValueAttribute"})}).Name
+    $__defaultValueParameters.Where({ !$__boundParameters["$_"] }).ForEach({$__boundParameters["$_"] = get-variable -value $_})
+    $__commandArgs = @()
+    $MyInvocation.MyCommand.Parameters.Values.Where({$_.SwitchParameter -and $_.Name -notmatch "Debug|Whatif|Confirm|Verbose" -and ! $__boundParameters[$_.Name]}).ForEach({$__boundParameters[$_.Name] = [switch]::new($false)})
+    if ($__boundParameters["Debug"]){wait-debugger}
+    $__commandArgs += 'solution'
+    $__commandArgs += 'list'
+    $__commandArgs += '--json'
+    foreach ($paramName in $__boundParameters.Keys|
+            Where-Object {!$__PARAMETERMAP[$_].ApplyToExecutable}|
+            Sort-Object {$__PARAMETERMAP[$_].OriginalPosition}) {
+        $value = $__boundParameters[$paramName]
+        $param = $__PARAMETERMAP[$paramName]
+        if ($param) {
+            if ($value -is [switch]) {
+                 if ($value.IsPresent) {
+                     if ($param.OriginalName) { $__commandArgs += $param.OriginalName }
+                 }
+                 elseif ($param.DefaultMissingValue) { $__commandArgs += $param.DefaultMissingValue }
+            }
+            elseif ( $param.NoGap ) {
+                $pFmt = "{0}{1}"
+                if($value -match "\s") { $pFmt = "{0}""{1}""" }
+                $__commandArgs += $pFmt -f $param.OriginalName, $value
+            }
+            else {
+                if($param.OriginalName) { $__commandArgs += $param.OriginalName }
+                $__commandArgs += $value | Foreach-Object {$_}
+            }
+        }
+    }
+    $__commandArgs = $__commandArgs | Where-Object {$_ -ne $null}
+    if ($__boundParameters["Debug"]){wait-debugger}
+    if ( $__boundParameters["Verbose"]) {
+         Write-Verbose -Verbose -Message pac
+         $__commandArgs | Write-Verbose -Verbose
+    }
+    $__handlerInfo = $__outputHandlers[$PSCmdlet.ParameterSetName]
+    if (! $__handlerInfo ) {
+        $__handlerInfo = $__outputHandlers["Default"] # Guaranteed to be present
+    }
+    $__handler = $__handlerInfo.Handler
+    if ( $PSCmdlet.ShouldProcess("pac $__commandArgs")) {
+    # check for the application and throw if it cannot be found
+        if ( -not (Get-Command -ErrorAction Ignore "pac")) {
+          throw "Cannot find executable 'pac'"
+        }
+        if ( $__handlerInfo.StreamOutput ) {
+            & "pac" $__commandArgs | & $__handler
+        }
+        else {
+            $result = & "pac" $__commandArgs
+            & $__handler $result
+        }
+    }
+  } # end PROCESS
+
+<#
+
+
+.DESCRIPTION
+Exports Unmanaged solution to disk and unpacks it
 
 #>
 }
@@ -432,8 +517,9 @@ Creates auth profiles for all environments user has access to
 }
 
 
-Set-Alias -Name 'pac-sol-un' -Value 'Get-UnmanagedSolutions'
+Set-Alias -Name 'pac-sol-unm' -Value 'Get-UnmanagedSolutions'
 Set-Alias -Name 'pac-sol-man' -Value 'Get-ManagedSolutions'
-Set-Alias -Name 'pac-exp-sol' -Value 'Export-Solution'
-Set-Alias -Name 'pac-sel-auth' -Value 'Select-AuthProfile'
-Set-Alias -Name 'pac-add-auth' -Value 'Add-AuthProfiles'
+Set-Alias -Name 'pac-sol-exp' -Value 'Export-Solutions'
+Set-Alias -Name 'pac-sol-unp' -Value 'Expand-Solutions'
+Set-Alias -Name 'pac-auth-sel' -Value 'Select-AuthProfile'
+Set-Alias -Name 'pac-auth-add' -Value 'Add-AuthProfiles'
