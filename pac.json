@@ -1,0 +1,157 @@
+{
+  "$schema": "https://aka.ms/PowerShell/Crescendo/Schemas/2022-06",
+  "Commands": [
+    {
+      "Verb": "Get",
+      "Noun": "UnmanagedSolutions",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "list",
+        "--json"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Gets list of unmanaged solutions",
+      "Aliases": [
+        "pac-sol-un"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "Handler": "$args[0] | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
+      "Verb": "Get",
+      "Noun": "ManagedSolutions",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "list",
+        "--json"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Gets list of managed solutions",
+      "Aliases": [
+        "pac-sol-man"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$input | ConvertFrom-Json | where { $_.IsManaged -eq $true } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
+      "Verb": "Export",
+      "Noun": "Solution",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "list",
+        "--json"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Exports Unmanaged solution to disk",
+      "Aliases": [
+        "pac-exp-sol"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host \"Exporting solution $($selected.SolutionUniqueName)..\"; pac solution export -p . -n $selected.SolutionUniqueName -ow }"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
+      "Verb": "Select",
+      "Noun": "AuthProfile",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "auth",
+        "list"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Selects a profile for authentication",
+      "Aliases": [
+        "pac-sel-auth"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$selected = $input | ConvertFrom-TextTable -ColumnOffset 0,6,13,23,28,45,89,126 | sort -Property Friendly_Name | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host \"Selecting Auth Profile $($selected.Friendly_Name)..\"; pac auth select -i $selected.Index.Substring(1,1) }"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
+      "Verb": "Add",
+      "Noun": "AuthProfiles",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "org",
+        "list"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Creates auth profiles for all environments user has access to",
+      "Aliases": [
+        "pac-add-auth"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$selected = $input | ConvertFrom-TextTable -ColumnOffset 0,17,54,97 | Out-ConsoleGridView; $selected | ForEach-Object { $env = [uri]$_.Environment_URL; Write-Host \"Creating Auth Profile for $($_.Environment_URL)..\"; pac auth create -n $env.Host.Split(\".\")[0] -env $_.Environment_URL; }; pac auth list"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    }
+  ]
+}
