@@ -183,6 +183,38 @@
       "NoInvocation": false,
       "Parameters": [],
       "Examples": []
+    },
+    {
+      "Verb": "Get",
+      "Noun": "UsersInRole",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "org",
+        "fetch",
+        "--xml",
+        "<fetch><entity name=\"systemuserroles\"><link-entity name=\"systemuser\" from=\"systemuserid\" to=\"systemuserid\" alias=\"systemuser\"><attribute name=\"fullname\"/><attribute name=\"systemuserid\"/><attribute name=\"internalemailaddress\"/><attribute name=\"isdisabled\"/><order attribute=\"fullname\"/></link-entity><link-entity name=\"role\" from=\"roleid\" to=\"roleid\" alias=\"role\"><attribute name=\"name\"/><attribute name=\"roleid\"/><order attribute=\"name\"/></link-entity></entity></fetch>"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Get users and their associated roles",
+      "Aliases": [
+        "pac-users-role"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"Role\"; E={$_.\"role.name\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
     }
   ]
 }

@@ -517,9 +517,96 @@ Creates auth profiles for all environments user has access to
 }
 
 
+
+
+function Get-UsersInRole
+{
+[PowerShellCustomFunctionAttribute(RequiresElevation=$False)]
+[CmdletBinding()]
+
+param(    )
+
+BEGIN {
+    $__PARAMETERMAP = @{}
+    $__outputHandlers = @{
+        Default = @{ StreamOutput = $True; Handler = { $input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N="Role"; E={$_."role.name"}}, @{N="Email"; E={$_."systemuser.internalemailaddress"}}, @{N="User"; E={$_."systemuser.fullname"}}, @{N="Disabled"; E={$_."systemuser.isdisabled"}} | Out-ConsoleGridView -OutputMode Multiple } }
+    }
+}
+
+PROCESS {
+    $__boundParameters = $PSBoundParameters
+    $__defaultValueParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Values.Where({$_.Attributes.Where({$_.TypeId.Name -eq "PSDefaultValueAttribute"})}).Name
+    $__defaultValueParameters.Where({ !$__boundParameters["$_"] }).ForEach({$__boundParameters["$_"] = get-variable -value $_})
+    $__commandArgs = @()
+    $MyInvocation.MyCommand.Parameters.Values.Where({$_.SwitchParameter -and $_.Name -notmatch "Debug|Whatif|Confirm|Verbose" -and ! $__boundParameters[$_.Name]}).ForEach({$__boundParameters[$_.Name] = [switch]::new($false)})
+    if ($__boundParameters["Debug"]){wait-debugger}
+    $__commandArgs += 'org'
+    $__commandArgs += 'fetch'
+    $__commandArgs += '--xml'
+    $__commandArgs += '<fetch><entity name="systemuserroles"><link-entity name="systemuser" from="systemuserid" to="systemuserid" alias="systemuser"><attribute name="fullname"/><attribute name="systemuserid"/><attribute name="internalemailaddress"/><attribute name="isdisabled"/><order attribute="fullname"/></link-entity><link-entity name="role" from="roleid" to="roleid" alias="role"><attribute name="name"/><attribute name="roleid"/><order attribute="name"/></link-entity></entity></fetch>'
+    foreach ($paramName in $__boundParameters.Keys|
+            Where-Object {!$__PARAMETERMAP[$_].ApplyToExecutable}|
+            Sort-Object {$__PARAMETERMAP[$_].OriginalPosition}) {
+        $value = $__boundParameters[$paramName]
+        $param = $__PARAMETERMAP[$paramName]
+        if ($param) {
+            if ($value -is [switch]) {
+                 if ($value.IsPresent) {
+                     if ($param.OriginalName) { $__commandArgs += $param.OriginalName }
+                 }
+                 elseif ($param.DefaultMissingValue) { $__commandArgs += $param.DefaultMissingValue }
+            }
+            elseif ( $param.NoGap ) {
+                $pFmt = "{0}{1}"
+                if($value -match "\s") { $pFmt = "{0}""{1}""" }
+                $__commandArgs += $pFmt -f $param.OriginalName, $value
+            }
+            else {
+                if($param.OriginalName) { $__commandArgs += $param.OriginalName }
+                $__commandArgs += $value | Foreach-Object {$_}
+            }
+        }
+    }
+    $__commandArgs = $__commandArgs | Where-Object {$_ -ne $null}
+    if ($__boundParameters["Debug"]){wait-debugger}
+    if ( $__boundParameters["Verbose"]) {
+         Write-Verbose -Verbose -Message pac
+         $__commandArgs | Write-Verbose -Verbose
+    }
+    $__handlerInfo = $__outputHandlers[$PSCmdlet.ParameterSetName]
+    if (! $__handlerInfo ) {
+        $__handlerInfo = $__outputHandlers["Default"] # Guaranteed to be present
+    }
+    $__handler = $__handlerInfo.Handler
+    if ( $PSCmdlet.ShouldProcess("pac $__commandArgs")) {
+    # check for the application and throw if it cannot be found
+        if ( -not (Get-Command -ErrorAction Ignore "pac")) {
+          throw "Cannot find executable 'pac'"
+        }
+        if ( $__handlerInfo.StreamOutput ) {
+            & "pac" $__commandArgs | & $__handler
+        }
+        else {
+            $result = & "pac" $__commandArgs
+            & $__handler $result
+        }
+    }
+  } # end PROCESS
+
+<#
+
+
+.DESCRIPTION
+Get users and their associated roles
+
+#>
+}
+
+
 Set-Alias -Name 'pac-sol-unm' -Value 'Get-UnmanagedSolutions'
 Set-Alias -Name 'pac-sol-man' -Value 'Get-ManagedSolutions'
 Set-Alias -Name 'pac-sol-exp' -Value 'Export-Solutions'
 Set-Alias -Name 'pac-sol-unp' -Value 'Expand-Solutions'
 Set-Alias -Name 'pac-auth-sel' -Value 'Select-AuthProfile'
 Set-Alias -Name 'pac-auth-add' -Value 'Add-AuthProfiles'
+Set-Alias -Name 'pac-users-role' -Value 'Get-UsersInRole'
