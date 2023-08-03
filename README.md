@@ -5,10 +5,17 @@ This is a PowerShell extension build using Crescendo to help power users run som
 
 Install the following modules
 
-`Install-Module -Name Microsoft.PowerShell.TextUtility -AllowPrerelease -Scope CurrentUser`
+```powershell
+Install-Module -Name Microsoft.PowerShell.TextUtility -AllowPrerelease -Scope CurrentUser
+Install-Module -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser
+```
+# Installation
 
-`Install-Module -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser`
+You can now install the PACPowerShell module from [PowerShell Gallery](https://www.powershellgallery.com/packages/PACPowerShell/) by running
 
+```powershell
+Install-Module -Name PACPowerShell -AllowPrerelease -Scope CurrentUser
+```
 # Available Commands
 
 | # | Command | Description |
@@ -20,14 +27,18 @@ Install the following modules
 | 5 | Export-Solutions | Exports the selected Unmanaged solutions to the current folder |
 | 6 | Expand-Solutions | Exports the selected Unmanaged solutions and also unpacks it using `pac solution clone` |
 | 7 | Get-Users | Displays users along with their role |
-| 7 | Get-UsersInRole | Displays users who have a specific role |
+| 7 | Get-UsersInRole | Displays users who have a specific role. Use -Role argument to specific the role name e.g `Get-UsersInRole -Role "System Administrator"` |
 
 # Contributing
 
 Install Crescendo using
 
-`Install-Module -Name Microsoft.PowerShell.Crescendo -AllowPrerelease`
+```powershell
+Install-Module -Name Microsoft.PowerShell.Crescendo -AllowPrerelease
+```
 
-You can add additional commands to [pac.crescendo.json](./src/pac.crescendo.json) and build the Crescendo module using
+You can add additional commands to [pac.crescendo.json](./pac.crescendo.json) and build the Crescendo module using
 
-`Export-CrescendoModule -ConfigurationFile pac.crescendo.json -ModuleName PsPAC -Force; Import-Module ./PsPAC.psd1 -Force`
+```powershell
+Export-CrescendoModule -ConfigurationFile pac.crescendo.json -ModuleName PACPowerShell -Force; Import-Module ./PACPowerShell.psd1 -Force
+```
