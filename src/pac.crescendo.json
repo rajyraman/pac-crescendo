@@ -1,5 +1,5 @@
 {
-  "$schema": "https://aka.ms/PowerShell/Crescendo/Schemas/2022-06",
+  "$schema": "https://aka.ms/PowerShell/Crescendo/Schemas/2022-06#",
   "Commands": [
     {
       "Verb": "Get",
@@ -160,7 +160,8 @@
       "OriginalName": "pac",
       "OriginalCommandElements": [
         "org",
-        "list"
+        "list",
+        "--xml"
       ],
       "Platform": [
         "Windows",
@@ -186,19 +187,55 @@
     },
     {
       "Verb": "Get",
-      "Noun": "UsersInRole",
+      "Noun": "Users",
       "OriginalName": "pac",
       "OriginalCommandElements": [
         "org",
-        "fetch",
-        "--xml",
-        "<fetch><entity name=\"systemuserroles\"><link-entity name=\"systemuser\" from=\"systemuserid\" to=\"systemuserid\" alias=\"systemuser\"><attribute name=\"fullname\"/><attribute name=\"systemuserid\"/><attribute name=\"internalemailaddress\"/><attribute name=\"isdisabled\"/><order attribute=\"fullname\"/></link-entity><link-entity name=\"role\" from=\"roleid\" to=\"roleid\" alias=\"role\"><attribute name=\"name\"/><attribute name=\"roleid\"/><order attribute=\"name\"/></link-entity></entity></fetch>"
+        "fetch"
       ],
       "Platform": [
         "Windows",
         "Linux"
       ],
       "Description": "Get users and their associated roles",
+      "Aliases": [
+        "pac-users"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Role\"; E={$_.\"role.name\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [
+        {
+          "OriginalName": "--xml",
+          "OriginalPosition": 0,
+          "Name": "Role",
+          "DefaultValue": "<fetch><entity name='systemuserroles'><link-entity name='systemuser' from='systemuserid' to='systemuserid' alias='systemuser'><attribute name='fullname'/><attribute name='systemuserid'/><attribute name='internalemailaddress'/><attribute name='isdisabled'/><order attribute='fullname'/></link-entity><link-entity name='role' from='roleid' to='roleid' alias='role'><attribute name='name'/><attribute name='roleid'/><order attribute='name'/></link-entity></entity></fetch>",
+          "ParameterType": "string"
+        }
+      ],
+      "Examples": []
+    },
+    {
+      "Verb": "Get",
+      "Noun": "UsersInRole",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "org",
+        "fetch"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Get users with a specific role",
       "Aliases": [
         "pac-users-role"
       ],
@@ -207,13 +244,24 @@
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"Role\"; E={$_.\"role.name\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
+          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
         }
       ],
       "SupportsShouldProcess": false,
       "SupportsTransactions": false,
       "NoInvocation": false,
-      "Parameters": [],
+      "Parameters": [
+        {
+          "OriginalName": "--xml",
+          "OriginalPosition": 0,
+          "Name": "Role",
+          "Description": "Name of role that is associated to the users.",
+          "Mandatory": true,
+          "ParameterType": "string",
+          "ArgumentTransformType": "Inline",
+          "ArgumentTransform": " param([string]$v) \"<fetch><entity name=''systemuserroles''><link-entity name=''systemuser'' from=''systemuserid'' to=''systemuserid'' alias=''systemuser''><attribute name=''fullname''/><attribute name=''systemuserid''/><attribute name=''internalemailaddress''/><attribute name=''isdisabled''/><order attribute=''fullname''/></link-entity><link-entity name=''role'' from=''roleid'' to=''roleid'' alias=''role''><attribute name=''name''/><attribute name=''roleid''/><filter><condition attribute=''name'' operator=''eq'' value=''$($v)''/></filter><order attribute=''name''/></link-entity></entity></fetch>\""
+        }
+      ],
       "Examples": []
     }
   ]

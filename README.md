@@ -19,10 +19,15 @@ Install the following modules
 | 4 | Get-ManagedSolutions | Displays the list of Managed solutions for the current auth profile |
 | 5 | Export-Solutions | Exports the selected Unmanaged solutions to the current folder |
 | 6 | Expand-Solutions | Exports the selected Unmanaged solutions and also unpacks it using `pac solution clone` |
-| 7 | Get-UsersInRole | Displays users along with their role |
+| 7 | Get-Users | Displays users along with their role |
+| 7 | Get-UsersInRole | Displays users who have a specific role |
 
 # Contributing
 
-You can add additional commands to [pac.json](./src/pac.json) and build the Crescendo module using
+Install Crescendo using
 
-`Export-CrescendoModule -ConfigurationFile pac.json -ModuleName PsPAC -Force; Import-Module ./PsPAC.psd1 -Force`
+`Install-Module -Name Microsoft.PowerShell.Crescendo -AllowPrerelease`
+
+You can add additional commands to [pac.crescendo.json](./src/pac.crescendo.json) and build the Crescendo module using
+
+`Export-CrescendoModule -ConfigurationFile pac.crescendo.json -ModuleName PsPAC -Force; Import-Module ./PsPAC.psd1 -Force`
