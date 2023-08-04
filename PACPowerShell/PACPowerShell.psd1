@@ -98,7 +98,7 @@
         PSData             = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'CrescendoBuilt, power-apps, pac, power-platform, power-platform-cli'
+            Tags       = @('CrescendoBuilt', 'power-apps', 'pac', 'power-platform', 'cli')
 
             # A URL to the license for this module.
             LicenseUri = 'https://github.com/rajyraman/pac-crescendo/LICENSE'
