@@ -12,7 +12,7 @@
     RootModule        = 'PACPowerShell.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.1'
+    ModuleVersion     = '0.0.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -98,7 +98,7 @@
         PSData             = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'CrescendoBuilt'
+            Tags       = 'CrescendoBuilt, power-apps, pac, power-platform, power-platform-cli'
 
             # A URL to the license for this module.
             LicenseUri = 'https://github.com/rajyraman/pac-crescendo/LICENSE'
@@ -128,7 +128,7 @@
         CrescendoVersion   = '1.1.0'
 
         # CrescendoGenerated
-        CrescendoGenerated = '08/04/2023 09:05:38'
+        CrescendoGenerated = '08/04/2023 18:19:41'
 
     } # End of PrivateData hashtable
 

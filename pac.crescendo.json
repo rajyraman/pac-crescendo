@@ -160,8 +160,7 @@
       "OriginalName": "pac",
       "OriginalCommandElements": [
         "org",
-        "list",
-        "--xml"
+        "list"
       ],
       "Platform": [
         "Windows",
@@ -262,7 +261,13 @@
           "ArgumentTransform": " param([string]$v) \"<fetch><entity name=''systemuserroles''><link-entity name=''systemuser'' from=''systemuserid'' to=''systemuserid'' alias=''systemuser''><attribute name=''fullname''/><attribute name=''systemuserid''/><attribute name=''internalemailaddress''/><attribute name=''isdisabled''/><order attribute=''fullname''/></link-entity><link-entity name=''role'' from=''roleid'' to=''roleid'' alias=''role''><attribute name=''name''/><attribute name=''roleid''/><filter><condition attribute=''name'' operator=''eq'' value=''$($v)''/></filter><order attribute=''name''/></link-entity></entity></fetch>\""
         }
       ],
-      "Examples": []
+      "Examples": [
+        {
+          "Command": "Get-UsersInRole -Role \"System Administrator\"",
+          "OriginalCommand": "",
+          "Description": "Get list of all users who have role System Administrator"
+        }
+      ]
     }
   ]
 }

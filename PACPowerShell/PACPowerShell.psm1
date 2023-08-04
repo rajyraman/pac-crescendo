@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2022-06#
-# Generated at: 08/04/2023 09:05:38
+# Generated at: 08/04/2023 18:19:41
 class PowerShellCustomFunctionAttribute : System.Attribute { 
     [bool]$RequiresElevation
     [string]$Source
@@ -531,7 +531,6 @@ PROCESS {
     if ($__boundParameters["Debug"]){wait-debugger}
     $__commandArgs += 'org'
     $__commandArgs += 'list'
-    $__commandArgs += '--xml'
     foreach ($paramName in $__boundParameters.Keys|
             Where-Object {!$__PARAMETERMAP[$_].ApplyToExecutable}|
             Sort-Object {$__PARAMETERMAP[$_].OriginalPosition}) {
@@ -823,6 +822,12 @@ Get users with a specific role
 .PARAMETER Role
 Name of role that is associated to the users.
 
+
+
+.EXAMPLE
+PS> Get-UsersInRole -Role "System Administrator"
+
+Get list of all users who have role System Administrator
 
 
 #>
