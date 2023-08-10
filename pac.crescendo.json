@@ -32,6 +32,37 @@
       "Examples": []
     },
     {
+      "Verb": "Select",
+      "Noun": "UnmanagedSolutions",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "list",
+        "--json"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Select a solution from a list of unmanaged solutions",
+      "Aliases": [
+        "pac-sel-sol-unm"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$selected = $input | ConvertFrom-Json | where { $_.IsManaged -eq $false } | sort -Property FriendlyName | select SolutionUniqueName, FriendlyName, VersionNumber | Out-ConsoleGridView  -Title \"Select Solution(s)..\" -OutputMode Single; Write-Host \"Exporting solution $($selected.SolutionUniqueName)..\"; $env:solution = $selected.SolutionUniqueName;"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
+    },
+    {
       "Verb": "Get",
       "Noun": "ManagedSolutions",
       "OriginalName": "pac",
@@ -94,6 +125,79 @@
       "Examples": []
     },
     {
+      "Verb": "Save",
+      "Noun": "UnmanagedSolution",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "export",
+        "-a",
+        "-p",
+        ".",
+        "-ow"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Exports Unmanaged solution to disk",
+      "Aliases": [
+        "pac-sol-unm-save"
+      ],
+      "OutputHandlers": [],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [
+        {
+          "OriginalName": "-n",
+          "OriginalPosition": 0,
+          "Name": "SolutionUniqueName",
+          "Description": "Unique name of the solution to export",
+          "Mandatory": true,
+          "ParameterType": "string"
+        }
+      ],
+      "Examples": []
+    },
+    {
+      "Verb": "Save",
+      "Noun": "ManagedSolution",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "solution",
+        "export",
+        "-a",
+        "-p",
+        ".",
+        "-ow",
+        "-m"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Exports Managed solution to disk",
+      "Aliases": [
+        "pac-sol-man-save"
+      ],
+      "OutputHandlers": [],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [
+        {
+          "OriginalName": "-n",
+          "OriginalPosition": 0,
+          "Name": "SolutionUniqueName",
+          "Description": "Unique name of the solution to export",
+          "Mandatory": true,
+          "ParameterType": "string"
+        }
+      ],
+      "Examples": []
+    },
+    {
       "Verb": "Expand",
       "Noun": "Solutions",
       "OriginalName": "pac",
@@ -145,7 +249,7 @@
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$selected = $input | ConvertFrom-TextTable -ColumnOffset 0,6,13,23,28,45,89,126 | sort -Property Friendly_Name | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host \"Selecting Auth Profile $($selected.Friendly_Name)..\"; pac auth select -i $selected.Index.Substring(1,1) }"
+          "Handler": "$selected = $input | ConvertFrom-TextTable | sort -Property Friendly_Name | Out-ConsoleGridView -OutputMode Single; if($selected -ne $null) { Write-Host \"Selecting Auth Profile $($selected.Friendly_Name)..\"; pac auth select -i $selected.Index.Substring(1,1) }"
         }
       ],
       "SupportsShouldProcess": false,
@@ -175,7 +279,7 @@
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$selected = $input | ConvertFrom-TextTable -ColumnOffset 0,17,54,97 | Out-ConsoleGridView; $selected | ForEach-Object { $env = [uri]$_.Environment_URL; Write-Host \"Creating Auth Profile for $($_.Environment_URL)..\"; pac auth create -n $env.Host.Split(\".\")[0] -env $_.Environment_URL; }; pac auth list"
+          "Handler": "$selected = $input | ConvertFrom-TextTable | Out-ConsoleGridView; $selected | ForEach-Object { $env = [uri]$_.Environment_URL; Write-Host \"Creating Auth Profile for $($_.Environment_URL)..\"; pac auth create -n $env.Host.Split(\".\")[0] -env $_.Environment_URL; }; pac auth list"
         }
       ],
       "SupportsShouldProcess": false,
@@ -205,7 +309,7 @@
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Role\"; E={$_.\"role.name\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
+          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Role\"; E={$_.\"role.name\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
         }
       ],
       "SupportsShouldProcess": false,
@@ -243,7 +347,7 @@
           "ParameterSetName": "Default",
           "HandlerType": "Inline",
           "StreamOutput": true,
-          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ColumnOffset 0,37,59,157,209,246,283 -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
+          "Handler": "$input | Select-Object -Skip 3 | ConvertFrom-TextTable -ConvertPropertyValue | Select-Object @{N=\"User\"; E={$_.\"systemuser.fullname\"}}, @{N=\"Email\"; E={$_.\"systemuser.internalemailaddress\"}}, @{N=\"Disabled\"; E={$_.\"systemuser.isdisabled\"}} | Out-ConsoleGridView -OutputMode Multiple"
         }
       ],
       "SupportsShouldProcess": false,
@@ -268,6 +372,36 @@
           "Description": "Get list of all users who have role System Administrator"
         }
       ]
+    },
+    {
+      "Verb": "Deploy",
+      "Noun": "ManagedSolution",
+      "OriginalName": "pac",
+      "OriginalCommandElements": [
+        "auth",
+        "list"
+      ],
+      "Platform": [
+        "Windows",
+        "Linux"
+      ],
+      "Description": "Deploys a Managed solution to an environment",
+      "Aliases": [
+        "pac-man-sol-deploy"
+      ],
+      "OutputHandlers": [
+        {
+          "ParameterSetName": "Default",
+          "HandlerType": "Inline",
+          "StreamOutput": true,
+          "Handler": "$orgs = $input | ConvertFrom-TextTable | select Name, Friendly_Name, Url, User, Cloud | sort -Property Friendly_Name; $source =  $orgs | Out-ConsoleGridView  -Title \"Select Source..\" -OutputMode Single; if($null -ne $source) { Write-Host \"Source Auth Profile = $($source.Friendly_Name)..\"; }; pac auth select -n $($source.Name); Select-UnmanagedSolutions; $target = $orgs | where { $_.Name -ne $($source.Name) } | Out-ConsoleGridView -Title \"Select Target..\" -OutputMode Single; if($null -ne $target ) { Write-Host \"Target Auth Profile = $($target.Friendly_Name)..\"; }; if($null -ne $env:solution) { Save-ManagedSolution -SolutionUniqueName $env:solution; pac auth select -n $($target.Name); pac solution import -p \"$($env:solution)_managed.zip\" -ap -a; Remove-Item \"$($env:solution)_managed.zip\" }"
+        }
+      ],
+      "SupportsShouldProcess": false,
+      "SupportsTransactions": false,
+      "NoInvocation": false,
+      "Parameters": [],
+      "Examples": []
     }
   ]
 }
