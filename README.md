@@ -30,7 +30,8 @@ Install-Module -Name PACPowerShell -AllowPrerelease -Scope CurrentUser
 | 5 | Export-Solutions | Exports the selected Unmanaged solutions to the current folder |
 | 6 | Expand-Solutions | Exports the selected Unmanaged solutions and also unpacks it using `pac solution clone` |
 | 7 | Get-Users | Displays users along with their role |
-| 7 | Get-UsersInRole | Displays users who have a specific role. Use -Role argument to specific the role name e.g `Get-UsersInRole -Role "System Administrator"` |
+| 8 | Get-UsersInRole | Displays users who have a specific role. Use -Role argument to specific the role name e.g `Get-UsersInRole -Role "System Administrator"` |
+| 9 | Deploy-ManagedSolution | Take unmanaged solution from source environment and deploys it as Managed to a target environment |
 
 # Contributing
 
